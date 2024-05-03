@@ -99,16 +99,16 @@ if __name__ == "__main__":
 
 
     # Perform matrix multiplication on the CPU
-    total_cpu_time=0.0
-    total_gpu_time=0.0
-    total_kernal_time=0.0
+    cpu_start=time.time()
+    total_kernel_time=0.0
     for i in range(0,4):
         C_cpu, cpu_time = matrix_multiply_cpu(A, B)
-        total_cpu_time+=cpu_time
+    total_cpu_time=time.time()-cpu_start
+    gpu_start=time.time()
     for i in range(0,4):
         C, gpu_time, kernel_time = matrix_multiply_gpu(A, B)
-        total_gpu_time+=gpu_time
         total_kernel_time+=kernel_time
+    total_gpu_time=time.time-gpu_start
 
     print(f"CPU time: {total_cpu_time}s, GPU time: {total_gpu_time}s, Kernel time: {total_kernel_time}s")
     # print("CPU results:")
