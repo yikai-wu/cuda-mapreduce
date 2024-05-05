@@ -55,34 +55,7 @@ def matrix_multiply_gpu(A, B):
 
 def matrix_multiply_cpu(A, B):
     cpu_start=time.time()
-    # Map function to prepare the (key, value) pairs for matrix multiplication
-    def map_matrix_mult(A, B):
-        mapped_values = []
-        n = len(B)  # Assuming B is well-formed as an n x p matrix
-        for i, row in enumerate(A):
-            for j in range(len(B[0])):
-                for k in range(n):
-                    mapped_values.append(((i, j), (row[k], B[k][j])))
-        return mapped_values
-
-    # Reduce function to compute the matrix product from mapped values
-    def reduce_matrix_mult(mapped_values):
-        def reducer(accumulator, value):
-            key, numbers = value
-            result = accumulator.get(key, 0) + numbers[0] * numbers[1]
-            accumulator[key] = result
-            return accumulator
-        
-        return reduce(reducer, mapped_values, {})
-
-    # Perform the map and reduce operations
-    # mapped_values = map_matrix_mult(A, B)
-    # reduced_result = reduce_matrix_mult(mapped_values)
-
-    # # Format the result into the matrix form
-    # m = len(A)
-    # p = len(B[0])
-    # C = [[reduced_result.get((i, j), 0) for j in range(p)] for i in range(m)]
+   
     C=np.dot(A, B)
     cpu_time=time.time()-cpu_start
     return C, cpu_time

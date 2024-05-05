@@ -83,8 +83,10 @@ def gpu_word_count(text, hash_size=65536, chunk_size=128):
     threads_per_block = 256
     blocks_per_grid = (len(char_array) + threads_per_block - 1) // threads_per_block
 
+    cuda.synchronize()
     kernel_start_time=time.time()
     map[blocks_per_grid, threads_per_block](d_text, d_counts, d_hash_start, d_hash_length, hash_size, chunk_size)
+    cuda.synchronize()
     kernel_end_time=time.time()
     kernel_time = kernel_end_time-kernel_start_time
 

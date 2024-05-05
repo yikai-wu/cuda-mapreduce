@@ -67,6 +67,7 @@ def gpu_kmeans(data, k=3, max_iter=300):
     counts = np.zeros(k, dtype=np.int32)
     counts_device = cuda.to_device(counts)
 
+    cuda.synchronize()
     kernel_start_time=time.time()
     for _ in range(max_iter):
         assign_labels[blocks_per_grid_points, threads_per_block](data_device, centroids_device, labels_device)
@@ -75,6 +76,7 @@ def gpu_kmeans(data, k=3, max_iter=300):
         update_centroids[blocks_per_grid_points, threads_per_block](data_device, centroids_device, labels_device, counts_device)
         finalize_centroids[blocks_per_grid_centroids, threads_per_block](centroids_device, counts_device)
     kernel_end_time=time.time()
+    cuda.synchronize()
     kernel_time=kernel_end_time-kernel_start_time
         
     centroids = centroids_device.copy_to_host()
