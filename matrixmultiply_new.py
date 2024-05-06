@@ -2,6 +2,7 @@ import numpy as np
 from numba import cuda, jit, float32
 import time
 import math
+import torch
 
 def matrix_multiply_cpu(A, B):
     cpu_start=time.time()
@@ -69,6 +70,18 @@ def random_matrix(n):
     B = np.random.default_rng().standard_normal(size=(n,n), dtype='float32')
     return A, B
 
+def matrix_multiply_torch(A, B):
+    start_time = time.time()
+    device = torch.device("cuda:0")
+    A_device = torch.from_numpy(A).to(device)
+    B_device = torch.from_numpy(B).to(device)
+    kernel_start_time = time.time()
+    C_device = torch.matmul(A_device, B_device)
+    kernel_time = time.time()-kernel_start_time
+    C = C_device.cpu().numpy()
+    torch_time = time.time()-start_time
+    return C, torch_time, kernel_time
+
 A, B = random_matrix(10000)
 print(A.shape)
 print(B.shape)
@@ -79,10 +92,6 @@ C_cpu, cpu_time = matrix_multiply_cpu(A, B)
 total_cpu_time=time.time()-cpu_start
 gpu_start=time.time()
 C, kernel_time, gpu_time =  matrix_multiply_gpu(A, B)
-total_gpu_time=time.time()-gpu_start
-print(C_cpu)
-print(C)
-print(np.sum(C-C_cpu))
-print(f"CPU time: {total_cpu_time}s, GPU time: {total_gpu_time}s, kernel time: {kernel_time}s")
-
+C_torch, torch_time, torch_kernel_time = matrix_multiply_torch(A,B)
+print(f"CPU time: {total_cpu_time}s, GPU time: {gpu_time}s, kernel time: {kernel_time}s, Torch time: {torch_time}s, Torch kernel time: {torch_kernel_time}s")
 
