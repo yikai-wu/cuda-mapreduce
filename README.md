@@ -1,4 +1,4 @@
-#CUDA MapReduce
+CUDA MapReduce
 
 Word count: wordcount.py
 
