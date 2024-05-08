@@ -4,6 +4,7 @@ from numba import cuda, types, uint32, int32, jit, njit
 from collections import Counter
 import string
 import time
+import os 
 
 @cuda.jit(device=True)
 def isalpha(c):
@@ -111,7 +112,7 @@ def cpu_word_count(text):
     return word_counts, cpu_time
 
 if __name__ == "__main__":
-    folder_path = "data/wikipedia_50GB"
+    folder_path = "data/lg"
     text = "" 
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
@@ -120,7 +121,7 @@ if __name__ == "__main__":
                 text += file.read() 
 
     word_counts, cpu_time = cpu_word_count(text)
-    char_array, counts, hash_start, hash_length, gpu_time, kernel_time = gpu_word_count(text, hash_size=65536, chunk_size=1)
+    char_array, counts, hash_start, hash_length, gpu_time, kernel_time = gpu_word_count(text, hash_size=65536, chunk_size=4)
 
     print(f"cpu: {cpu_time}s, gpu: {gpu_time}s, kernel: {kernel_time}s")
 

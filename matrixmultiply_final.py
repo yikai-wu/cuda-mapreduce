@@ -82,16 +82,28 @@ def matrix_multiply_torch(A, B):
     torch_time = time.time()-start_time
     return C, torch_time, kernel_time
 
-A, B = random_matrix(10000)
-print(A.shape)
-print(B.shape)
+def read_matrices_from_files(file_A='matrix_A_lg.npy', file_B='matrix_B_lg.npy'):
+    A = np.load(file_A)
+    B = np.load(file_B)
+    return A, B
 
-cpu_start=time.time()
-total_kernel_time=0.0
-C_cpu, cpu_time = matrix_multiply_cpu(A, B)
-total_cpu_time=time.time()-cpu_start
-gpu_start=time.time()
-C, kernel_time, gpu_time =  matrix_multiply_gpu(A, B)
-C_torch, torch_time, torch_kernel_time = matrix_multiply_torch(A,B)
-print(f"CPU time: {total_cpu_time}s, GPU time: {gpu_time}s, kernel time: {kernel_time}s, Torch time: {torch_time}s, Torch kernel time: {torch_kernel_time}s")
+if __name__ == "__main__":
+    A, B = read_matrices_from_files()
+    print(A.shape)
+    print(B.shape)
+
+
+    # Perform matrix multiplication on the CPU
+    cpu_start=time.time()
+    total_kernel_time=0.0
+    for i in range(0,4):
+        C_cpu, cpu_time = matrix_multiply_cpu(A, B)
+    total_cpu_time=time.time()-cpu_start
+    gpu_start=time.time()
+    for i in range(0,4):
+        C, gpu_time, kernel_time = matrix_multiply_gpu(A, B)
+        total_kernel_time+=kernel_time
+    total_gpu_time=time.time-gpu_start
+
+    print(f"CPU time: {total_cpu_time}s, GPU time: {total_gpu_time}s, Kernel time: {total_kernel_time}s")
 

@@ -20,5 +20,4 @@ if __name__ == "__main__":
     size_in_mb = 1000  # Specify the desired size in MB
     num_features = 2000
     data = generate_data(size_in_mb, num_features)
-    # Use numpy.savetxt to write array to file in text format
-    np.savetxt("num_data.txt", data, fmt='%f')
+    np.save("num_data.npy", data)

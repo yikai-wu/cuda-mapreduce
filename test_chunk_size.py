@@ -4,7 +4,7 @@ from numba import cuda, types, uint32, int32, jit, njit
 from collections import Counter
 import string
 import time
-import os
+import os 
 
 @cuda.jit(device=True)
 def isalpha(c):
@@ -84,8 +84,10 @@ def gpu_word_count(text, hash_size=65536, chunk_size=128):
     threads_per_block = 256
     blocks_per_grid = (len(char_array) + threads_per_block - 1) // threads_per_block
 
+    cuda.synchronize()
     kernel_start_time=time.time()
     map[blocks_per_grid, threads_per_block](d_text, d_counts, d_hash_start, d_hash_length, hash_size, chunk_size)
+    cuda.synchronize()
     kernel_end_time=time.time()
     kernel_time = kernel_end_time-kernel_start_time
 
@@ -119,10 +121,10 @@ if __name__ == "__main__":
                 text += file.read() 
 
     word_counts, cpu_time = cpu_word_count(text)
-    char_array, counts, hash_start, hash_length, gpu_time, kernel_time = gpu_word_count(text, hash_size=65536, chunk_size=1)
+    # char_array, counts, hash_start, hash_length, gpu_time, kernel_time = gpu_word_count(text, hash_size=65536, chunk_size=1)
 
     # print(f"cpu: {cpu_time}s, gpu: {gpu_time}s, kernel: {kernel_time}s")
-    for i in range(10):
+    for i in range(0,11):
         char_array, counts, hash_start, hash_length, gpu_time, kernel_time = gpu_word_count(text, hash_size=65536, chunk_size=2**i)
         print(f"gpu: {gpu_time}s, kernel: {kernel_time}s")
 
