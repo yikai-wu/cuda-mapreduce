@@ -1,7 +1,7 @@
 CUDA MapReduce
 
-Word count: wordcount.py
+Word count: wordcount_final.py
 
-K-means clustering: kmeans.py
+K-means clustering: kmeans_final.py
 
-Matrix multiplication: matrixmultiply_new.py
+Matrix multiplication: matrixmultiply_final.py
